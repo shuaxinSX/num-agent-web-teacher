@@ -1,0 +1,427 @@
+/* Modern styling for the Login and Register page - Supports System Light/Dark Theme */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Default: System Light mode variables */
+  --bg-color: #f1f5f9;
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --card-shadow: rgba(15, 23, 42, 0.08);
+  --glow-opacity: 0.18;
+  --title-color: #0f172a;
+  --subtitle-color: #475569;
+  --label-color: #334155;
+  --input-bg: rgba(255, 255, 255, 0.85);
+  --input-border: rgba(0, 0, 0, 0.1);
+  --input-color: #0f172a;
+  --input-placeholder: #94a3b8;
+  --footer-text: #64748b;
+  --error-bg: rgba(239, 68, 68, 0.06);
+  --error-border: rgba(239, 68, 68, 0.15);
+  --error-text: #dc2626;
+  --success-bg: rgba(16, 185, 129, 0.06);
+  --success-border: rgba(16, 185, 129, 0.15);
+  --success-text: #059669;
+  --inset-shadow-color: rgba(255, 255, 255, 0.6);
+  --input-icon-color: #64748b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode overrides */
+    --bg-color: #0d0f14;
+    --card-bg: rgba(18, 24, 38, 0.7);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --card-shadow: rgba(0, 0, 0, 0.5);
+    --glow-opacity: 0.4;
+    --title-color: #ffffff;
+    --subtitle-color: #9ca3af;
+    --label-color: #d1d5db;
+    --input-bg: rgba(10, 15, 26, 0.8);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --input-color: #ffffff;
+    --input-placeholder: #4b5563;
+    --footer-text: #9ca3af;
+    --error-bg: rgba(239, 68, 68, 0.1);
+    --error-border: rgba(239, 68, 68, 0.2);
+    --error-text: #fca5a5;
+    --success-bg: rgba(16, 185, 129, 0.1);
+    --success-border: rgba(16, 185, 129, 0.2);
+    --success-text: #6ee7b7;
+    --inset-shadow-color: rgba(255, 255, 255, 0.1);
+    --input-icon-color: #6b7280;
+  }
+}
+
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--input-color);
+  padding: 20px;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+}
+
+/* Background glows */
+.login-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.glow-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: var(--glow-opacity);
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+}
+
+.glow-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #3b82f6 0%, #1d4ed8 100%);
+  top: -10%;
+  left: -10%;
+  animation: float-slow 15s infinite ease-in-out alternate;
+}
+
+.glow-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #8b5cf6 0%, #6d28d9 100%);
+  bottom: -15%;
+  right: -10%;
+  animation: float-slow 20s infinite ease-in-out alternate-reverse;
+}
+
+@keyframes float-slow {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(40px, 30px) scale(1.1);
+  }
+}
+
+/* Glassmorphism Card */
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 40px var(--card-shadow),
+              inset 0 1px 0 var(--inset-shadow-color);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 2;
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  display: inline-block;
+  animation: bounce-gentle 4s infinite ease-in-out;
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.login-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--title-color) 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.login-header p {
+  color: var(--subtitle-color);
+  font-size: 14px;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+/* Forms and Inputs */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--label-color);
+  text-align: left;
+  transition: color 0.3s ease;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 16px;
+  color: var(--input-icon-color);
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.input-wrapper input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  padding: 14px 14px 14px 44px;
+  color: var(--input-color);
+  font-size: 15px;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.input-wrapper input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2),
+              inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  background: var(--input-bg);
+}
+
+.input-wrapper input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.error-message {
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
+  font-size: 13px;
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  animation: shake 0.4s ease;
+  transition: all 0.3s ease;
+}
+
+.success-message {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  color: var(--success-text);
+  font-size: 13px;
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Submit Button */
+.submit-btn {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+}
+
+.submit-btn:active {
+  transform: translateY(1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading Spinner */
+.spinner-loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Footer Section */
+.login-footer {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.login-footer span {
+  color: var(--footer-text);
+  transition: color 0.3s ease;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #4f46e5;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggle-btn {
+    color: #818cf8;
+  }
+}
+
+.toggle-btn:hover {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+.toggle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* Floating auth bar in App.jsx */
+.auth-header-bar {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 16px;
+  border-radius: 20px;
+  z-index: 9999; /* ensure it stays on top */
+  box-shadow: 0 4px 12px var(--card-shadow);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: all 0.3s ease;
+}
+
+.auth-user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--input-color);
+}
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logout-btn {
+    color: #fca5a5;
+  }
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ffffff;
+  transform: translateY(-0.5px);
+}

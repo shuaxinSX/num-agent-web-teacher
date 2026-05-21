@@ -1,0 +1,55 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: num-agent-web-teacher
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - JWT_SECRET=${JWT_SECRET:-num-agent-default-secret-key-123456}
+      
+      # Agent LLM Proxy Config
+      - AGENT_API_BASE_URL=${AGENT_API_BASE_URL}
+      - AGENT_API_KEY=${AGENT_API_KEY}
+      - VITE_AGENT_API_PROVIDER=local-proxy
+      - VITE_AGENT_API_MODEL=${VITE_AGENT_API_MODEL:-gpt-4.1-mini}
+      - VITE_AGENT_MODELS=${VITE_AGENT_MODELS}
+
+      # Volcengine Speech Recognition ASR Config
+      - VOLCENGINE_ASR_APP_ID=${VOLCENGINE_ASR_APP_ID}
+      - VOLCENGINE_ASR_ACCESS_TOKEN=${VOLCENGINE_ASR_ACCESS_TOKEN}
+      - VOLCENGINE_ASR_RESOURCE_ID=${VOLCENGINE_ASR_RESOURCE_ID}
+      - VOLCENGINE_ASR_MODEL_NAME=${VOLCENGINE_ASR_MODEL_NAME}
+      - VOLCENGINE_ASR_WS_URL=${VOLCENGINE_ASR_WS_URL}
+
+      # Database Configuration
+      # Default: Uses internal SQLite database (recommended for simple setup).
+      # To use PostgreSQL, configure and uncomment the postgres service below, 
+      # and set: DATABASE_URL=postgresql://postgres:postgres_password@db:5432/num_agent
+      - SQLITE_DB_PATH=/app/server/data/database.sqlite
+      # - DATABASE_URL=postgresql://postgres:postgres_password@db:5432/num_agent
+    volumes:
+      - sqlite-data:/app/server/data
+    restart: always
+
+  # Optional PostgreSQL database service. 
+  # Uncomment both sections below if you wish to run a dedicated PG database.
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: num-agent-postgres
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres_password
+  #     POSTGRES_DB: num_agent
+  #   volumes:
+  #     - pg-data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   restart: always
+
+volumes:
+  sqlite-data:
+  # pg-data:

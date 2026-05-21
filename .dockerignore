@@ -1,0 +1,8 @@
+node_modules
+dist
+server/node_modules
+server/database.sqlite
+.git
+.env
+.env.local
+*.log
