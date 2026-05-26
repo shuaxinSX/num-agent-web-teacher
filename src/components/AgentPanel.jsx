@@ -52,6 +52,11 @@ const featureGroups = [
         description: "学生填写、自评与课前练习"
       },
       {
+        id: "grouping",
+        title: "课前弹性分组",
+        description: "基于学情诊断的智能分组"
+      },
+      {
         id: "lagrange-feedback",
         title: "课后数据收集",
         description: "拉格朗日插值的反馈采集与诊断"
@@ -65,11 +70,6 @@ const featureGroups = [
         id: "evaluation",
         title: "智能评价系统",
         description: "全链路数字画像 · 动态评价 · 成长轨迹"
-      },
-      {
-        id: "grouping",
-        title: "课前弹性分组",
-        description: "基于学情诊断的智能分组"
       }
     ]
   },
