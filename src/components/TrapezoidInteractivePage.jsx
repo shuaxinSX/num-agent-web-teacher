@@ -744,13 +744,13 @@ export function TrapezoidInteractivePage({
           </section>
 
           <div className="lesson-metric-grid">
-            <MetricCard label="当前值" value={formatMetric(rombergStep.cell.value)} tone="is-emphasis" />
+            <MetricCard label="当前值" value={formatMetric(rombergStep.item.value)} tone="is-emphasis" />
             <MetricCard label="高精参考值" value={formatMetric(reference)} />
             <MetricCard
               label="当前绝对误差"
-              value={formatMetric(Math.abs(reference - rombergStep.cell.value))}
+              value={formatMetric(Math.abs(reference - rombergStep.item.value))}
             />
-            <MetricCard label="当前阶次" value={rombergStep.cell.orderLabel} />
+            <MetricCard label="当前阶次" value={rombergStep.item.orderLabel} />
             <MetricCard label="对应总子区间数 N" value={`${rombergCurrentN}`} />
           </div>
         </aside>
