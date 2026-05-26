@@ -419,20 +419,6 @@ export function TrapezoidInteractivePage({
         </section>
 
         <aside className="lesson-side-column">
-          <StageTabs stage={stage} onChange={setStage} />
-          <LessonControlBar
-            isPlaying={playback.isPlaying}
-            onTogglePlay={() => playback.setIsPlaying((previous) => !previous)}
-            onReset={playback.reset}
-            onPrev={playback.goPrev}
-            onNext={playback.goNext}
-            progress={playback.progress}
-            onProgressChange={playback.setProgress}
-            speed={playback.speed}
-            onSpeedChange={playback.setSpeed}
-            n={n}
-            onNChange={setN}
-          />
           <section className="lesson-side-card">
             <MathFormula latex={String.raw`L_N = h\sum_{i=0}^{N-1} f(x_i),\quad h=\frac{b-a}{N}`} />
             <MathFormula
@@ -510,20 +496,6 @@ export function TrapezoidInteractivePage({
         </section>
 
         <aside className="lesson-side-column">
-          <StageTabs stage={stage} onChange={setStage} />
-          <LessonControlBar
-            isPlaying={playback.isPlaying}
-            onTogglePlay={() => playback.setIsPlaying((previous) => !previous)}
-            onReset={playback.reset}
-            onPrev={playback.goPrev}
-            onNext={playback.goNext}
-            progress={playback.progress}
-            onProgressChange={playback.setProgress}
-            speed={playback.speed}
-            onSpeedChange={playback.setSpeed}
-            n={n}
-            onNChange={setN}
-          />
           <section className="lesson-side-card">
             <div className="lesson-highlight-stat">
               <strong>{assemblyCount}</strong>
@@ -612,20 +584,6 @@ export function TrapezoidInteractivePage({
         </section>
 
         <aside className="lesson-side-column">
-          <StageTabs stage={stage} onChange={setStage} />
-          <LessonControlBar
-            isPlaying={playback.isPlaying}
-            onTogglePlay={() => playback.setIsPlaying((previous) => !previous)}
-            onReset={playback.reset}
-            onPrev={playback.goPrev}
-            onNext={playback.goNext}
-            progress={playback.progress}
-            onProgressChange={playback.setProgress}
-            speed={playback.speed}
-            onSpeedChange={playback.setSpeed}
-            n={n}
-            onNChange={setN}
-          />
           <section className="lesson-side-card">
             <MathFormula
               latex={String.raw`E_i = -\frac{h^3}{12} f''(\xi_i),\qquad \xi_i\in(x_i, x_{i+1})`}
