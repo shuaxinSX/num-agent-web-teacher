@@ -70,17 +70,6 @@ router.post("/agent/chat/completions", authenticateToken, async (req, res) => {
     return res.status(503).json({ message: "服务端未配置 AGENT_API_BASE_URL" });
   }
 
-  const upstreamController = new AbortController();
-  const abortUpstream = () => {
-    if (!upstreamController.signal.aborted) {
-      upstreamController.abort();
-    }
-  };
-
-  req.on("aborted", abortUpstream);
-  req.on("close", abortUpstream);
-  res.on("close", abortUpstream);
-
   try {
     const upstream = await fetch(`${config.agentBaseUrl}/chat/completions`, {
       method: "POST",
@@ -88,8 +77,7 @@ router.post("/agent/chat/completions", authenticateToken, async (req, res) => {
         "Content-Type": "application/json",
         ...(config.agentApiKey ? { Authorization: `Bearer ${config.agentApiKey}` } : {})
       },
-      body: JSON.stringify(req.body),
-      signal: upstreamController.signal
+      body: JSON.stringify(req.body)
     });
 
     copyResponseHeaders(upstream, res);
@@ -121,10 +109,6 @@ router.post("/agent/chat/completions", authenticateToken, async (req, res) => {
     } else if (!res.writableEnded) {
       res.end();
     }
-  } finally {
-    req.off("aborted", abortUpstream);
-    req.off("close", abortUpstream);
-    res.off("close", abortUpstream);
   }
 });
 
