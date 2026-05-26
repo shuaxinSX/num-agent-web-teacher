@@ -6,6 +6,22 @@ COPY package.json package-lock.json ./
 COPY byted-ailab-speech-sdk-4.0.10.tgz ./
 RUN npm ci --legacy-peer-deps
 COPY . .
+
+# Frontend build-time env vars. On Render these are auto-supplied as Docker build
+# args from the dashboard's Environment Variables, but only if declared as ARG here.
+ARG VITE_AGENT_API_PROVIDER
+ARG VITE_AGENT_API_BASE_URL
+ARG VITE_AGENT_API_MODEL
+ARG VITE_AGENT_MODELS
+ARG VITE_ASR_PROVIDER
+ARG VITE_VOLCENGINE_ASR_STS_ENDPOINT
+ENV VITE_AGENT_API_PROVIDER=$VITE_AGENT_API_PROVIDER \
+    VITE_AGENT_API_BASE_URL=$VITE_AGENT_API_BASE_URL \
+    VITE_AGENT_API_MODEL=$VITE_AGENT_API_MODEL \
+    VITE_AGENT_MODELS=$VITE_AGENT_MODELS \
+    VITE_ASR_PROVIDER=$VITE_ASR_PROVIDER \
+    VITE_VOLCENGINE_ASR_STS_ENDPOINT=$VITE_VOLCENGINE_ASR_STS_ENDPOINT
+
 RUN npm run build
 
 # Stage 2: Setup Express Backend & Run
