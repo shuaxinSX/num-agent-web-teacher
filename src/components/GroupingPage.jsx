@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { TYPE_LABELS, TYPE_COLORS } from '../data/groupingData';
 import { computeGroups, buildNetworkEdges, buildStudentGroupMap } from '../utils/groupingAlgorithm';
-import { getStoredStudents } from '../utils/studentDataStore';
+import { getStoredStudents, saveStudents, parseCSVText } from '../utils/studentDataStore';
 import { DataManagementModal } from './DataManagementModal';
 import { HeatmapChart } from './grouping/HeatmapChart';
 import { BubbleChart } from './grouping/BubbleChart';
@@ -24,6 +24,30 @@ export function GroupingPage() {
   const [hoveredId, setHoveredId] = useState(null);
   // 雷达图：最多2个学生叠加
   const [radarStudents, setRadarStudents] = useState([]);
+
+  const pageFileInputRef = useRef(null);
+
+  const handlePageCSVUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target.result;
+      const importedList = parseCSVText(text);
+
+      if (importedList.length > 0) {
+        saveStudents(importedList);
+        setCurrentStudents(importedList);
+        setRadarStudents([]);
+        setSelectedId(null);
+        alert(`成功导入 ${importedList.length} 条学生数据！`);
+      } else {
+        alert("未能识别到有效的学生数据，请检查 CSV 模板格式。");
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  };
 
   // 计算分组
   const groups = useMemo(() => computeGroups(currentStudents, mode, 5), [currentStudents, mode]);
@@ -97,6 +121,32 @@ export function GroupingPage() {
                 >
                   📁 管理学生数据
                 </button>
+                <button 
+                  onClick={() => pageFileInputRef.current.click()}
+                  style={{
+                    background: '#4f46e5',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '4px 12px',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 4px rgba(79, 70, 229, 0.2)',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseOver={(e) => e.target.style.background = '#4338ca'}
+                  onMouseOut={(e) => e.target.style.background = '#4f46e5'}
+                >
+                  📤 导入名单 (CSV)
+                </button>
+                <input 
+                  type="file" 
+                  ref={pageFileInputRef} 
+                  style={{ display: "none" }} 
+                  accept=".csv" 
+                  onChange={handlePageCSVUpload} 
+                />
               </div>
             </div>
 

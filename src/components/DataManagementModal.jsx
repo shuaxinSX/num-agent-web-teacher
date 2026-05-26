@@ -3,7 +3,8 @@ import {
   getStoredStudents, 
   saveStudents, 
   resetStudents, 
-  assignStudentType 
+  assignStudentType,
+  parseCSVText
 } from "../utils/studentDataStore";
 import { ROLE_OPTIONS, META_OPTIONS } from "../data/groupingData";
 import "./DataManagementModal.css";
@@ -156,41 +157,7 @@ export function DataManagementModal({ isOpen, onClose, onDataChanged }) {
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target.result;
-      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-      if (lines.length <= 1) {
-        alert("CSV 文件内容为空或格式不正确！");
-        return;
-      }
-
-      const importedList = [];
-      let hasError = false;
-
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(",").map(c => c.trim().replace(/^["']|["']$/g, ""));
-        if (cols.length < 14) continue;
-
-        const updatedScores = [
-          parseFloat(cols[4]) || 0,
-          parseFloat(cols[5]) || 0,
-          parseFloat(cols[6]) || 0,
-          parseFloat(cols[7]) || 0
-        ];
-
-        importedList.push({
-          id: cols[0],
-          name: cols[1],
-          gender: cols[2],
-          dorm: cols[3],
-          scores: updatedScores,
-          time: parseInt(cols[8]) || 15,
-          anxiety: parseInt(cols[9]) || 3,
-          meta: cols[10] || "模糊",
-          role: cols[11] || "计算",
-          participation: parseFloat(cols[12]) || 5,
-          collaboration: parseFloat(cols[13]) || 5,
-          type: assignStudentType(updatedScores)
-        });
-      }
+      const importedList = parseCSVText(text);
 
       if (importedList.length > 0) {
         setStudentsList(importedList);

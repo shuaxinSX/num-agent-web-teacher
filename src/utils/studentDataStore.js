@@ -59,3 +59,38 @@ export function resetStudents() {
   }
   return getStoredStudents();
 }
+
+export function parseCSVText(text) {
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  if (lines.length <= 1) return [];
+
+  const importedList = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",").map(c => c.trim().replace(/^["']|["']$/g, ""));
+    if (cols.length < 14) continue;
+
+    const updatedScores = [
+      parseFloat(cols[4]) || 0,
+      parseFloat(cols[5]) || 0,
+      parseFloat(cols[6]) || 0,
+      parseFloat(cols[7]) || 0
+    ];
+
+    importedList.push({
+      id: cols[0],
+      name: cols[1],
+      gender: cols[2],
+      dorm: cols[3],
+      scores: updatedScores,
+      time: parseInt(cols[8]) || 15,
+      anxiety: parseInt(cols[9]) || 3,
+      meta: cols[10] || "模糊",
+      role: cols[11] || "计算",
+      participation: parseFloat(cols[12]) || 5,
+      collaboration: parseFloat(cols[13]) || 5,
+      type: assignStudentType(updatedScores)
+    });
+  }
+  return importedList;
+}
+

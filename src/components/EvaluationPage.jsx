@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import {
   buildEvalStudents, computeClassStats,
   EVAL_DIM_KEYS, EVAL_DIM_LABELS, EVAL_DIM_COLORS, EVAL_DIM_ICONS,
   STAGE_LABELS, STAGE_COLORS, WEEK_LABELS, WEEKS,
 } from '../data/evaluationData';
-import { getStoredStudents } from '../utils/studentDataStore';
+import { getStoredStudents, saveStudents, parseCSVText } from '../utils/studentDataStore';
 import { DataManagementModal } from './DataManagementModal';
 import './toolPages.css';
 
@@ -160,6 +160,29 @@ export function EvaluationPage() {
   const [view, setView] = useState('teacher');
   const [selectedId, setSelectedId] = useState(null);
 
+  const pageFileInputRef = useRef(null);
+
+  const handlePageCSVUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target.result;
+      const importedList = parseCSVText(text);
+
+      if (importedList.length > 0) {
+        saveStudents(importedList);
+        setCurrentStudents(importedList);
+        setSelectedId(null);
+        alert(`成功导入 ${importedList.length} 条学生数据！`);
+      } else {
+        alert("未能识别到有效的学生数据，请检查 CSV 模板格式。");
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  };
+
   const evalStudents = useMemo(() => buildEvalStudents(currentStudents), [currentStudents]);
   const classStats   = useMemo(() => computeClassStats(evalStudents), [evalStudents]);
   const selected     = selectedId ? evalStudents.find(s => s.id === selectedId) : null;
@@ -197,6 +220,32 @@ export function EvaluationPage() {
           >
             📁 管理学生数据
           </button>
+          <button 
+            onClick={() => pageFileInputRef.current.click()}
+            style={{
+              background: '#4f46e5',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '4px 12px',
+              fontSize: '0.8rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(79, 70, 229, 0.2)',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseOver={(e) => e.target.style.background = '#4338ca'}
+            onMouseOut={(e) => e.target.style.background = '#4f46e5'}
+          >
+            📤 导入名单 (CSV)
+          </button>
+          <input 
+            type="file" 
+            ref={pageFileInputRef} 
+            style={{ display: "none" }} 
+            accept=".csv" 
+            onChange={handlePageCSVUpload} 
+          />
         </div>
         <p>把课前数据、弹性分组、AI 对话和课后反馈放在同一视图里，先看全班，再下钻到单个学生。</p>
       </div>
