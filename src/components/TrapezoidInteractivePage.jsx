@@ -173,6 +173,14 @@ function buildCustomFunctionCase(expression, aText, bText) {
   };
 }
 
+function safeLatex(expression) {
+  try {
+    return formatExpressionAsLatex(expression || "x");
+  } catch (_error) {
+    return "";
+  }
+}
+
 export function TrapezoidInteractivePage({
   globalExpr,
   globalA,
@@ -858,7 +866,7 @@ export function TrapezoidInteractivePage({
               ))}
             </div>
 
-            <MathFormula latex={formatExpressionAsLatex(labExpr || "x")} />
+            <MathFormula latex={safeLatex(labExpr)} />
           </section>
 
           <section className="lesson-side-card">

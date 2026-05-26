@@ -265,6 +265,7 @@ export function NumericalIntegrationVisualizer() {
         )
       );
     }
+    console.log("numerical-visualizer debug:", { method, isTrapezoid, fillShapes });
   }
 
   const xTicks = isReady
