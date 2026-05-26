@@ -146,6 +146,10 @@ export class OpenAICompatibleTeachingAgentAdapter {
       const delta = payload.choices?.[0]?.delta;
       const finishReason = payload.choices?.[0]?.finish_reason;
 
+      if (delta?.reasoning_content) {
+        handlers.onReasoning?.(delta.reasoning_content);
+      }
+
       if (delta?.content) {
         handlers.onToken?.(delta.content);
       }
@@ -210,14 +214,16 @@ export class OpenAICompatibleTeachingAgentAdapter {
       }
 
       const payload = await response.json();
-      const rawContent = payload.choices?.[0]?.message?.content;
+      const message = payload.choices?.[0]?.message ?? {};
+      const rawContent = message.content;
       const content = typeof rawContent === "string" ? this.stripThinkTags(rawContent) : rawContent;
+      const reasoning = typeof message.reasoning_content === "string" ? message.reasoning_content.trim() : "";
 
       if (!content) {
         throw new Error("API 没有返回可用内容。");
       }
 
-      return content.trim();
+      return { content: content.trim(), reasoning };
     } catch (error) {
       throw this.normalizeRequestError(error);
     }
@@ -279,13 +285,11 @@ export class OpenAICompatibleTeachingAgentAdapter {
 
   async chat({ messages, model, systemPrompt }) {
     const nextMessages = this.buildRequestMessages(messages, systemPrompt);
-
-    return this.requestCompletion(nextMessages, {
-      model
-    });
+    const result = await this.requestCompletion(nextMessages, { model });
+    return result.content;
   }
 
-  async chatStream({ messages, model, systemPrompt, onToken }) {
+  async chatStream({ messages, model, systemPrompt, onToken, onReasoning }) {
     this.ensureConfigured();
 
     const nextMessages = this.buildRequestMessages(messages, systemPrompt);
@@ -320,10 +324,15 @@ export class OpenAICompatibleTeachingAgentAdapter {
       }
 
       let aggregated = "";
+      let aggregatedReasoning = "";
       await this.parseEventStream(response, {
         onToken: (token) => {
           aggregated += token;
           onToken?.(token, aggregated);
+        },
+        onReasoning: (token) => {
+          aggregatedReasoning += token;
+          onReasoning?.(token, aggregatedReasoning);
         }
       });
 
@@ -332,7 +341,7 @@ export class OpenAICompatibleTeachingAgentAdapter {
         throw new Error("流式响应未返回可用内容。");
       }
 
-      return cleaned;
+      return { content: cleaned, reasoning: aggregatedReasoning.trim() };
     } catch (error) {
       if (!this.shouldFallbackToNonStream(error)) {
         throw this.normalizeRequestError(error);

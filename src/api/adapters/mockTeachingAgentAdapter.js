@@ -72,7 +72,7 @@ export class MockTeachingAgentAdapter {
   async chatStream({ messages, model, onToken }) {
     const answer = await this.chat({ messages, model });
     await this.streamText(answer, onToken);
-    return answer;
+    return { content: answer, reasoning: "" };
   }
 
   async explainTopic(topic, context = "") {

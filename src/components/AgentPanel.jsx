@@ -143,11 +143,12 @@ function createId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-function createMessage(role, content) {
+function createMessage(role, content, reasoning = "") {
   return {
     id: createId(),
     role,
-    content
+    content,
+    reasoning
   };
 }
 
@@ -546,50 +547,36 @@ export function AgentPanel() {
       model
     });
 
-    const answer = await agent.chatStream({
+    const patchAssistant = (patch) => {
+      setConversations((current) =>
+        current.map((conversation) =>
+          conversation.id === conversationId
+            ? {
+                ...conversation,
+                messages: conversation.messages.map((message) =>
+                  message.id === assistantMessageId ? { ...message, ...patch } : message
+                )
+              }
+            : conversation
+        )
+      );
+    };
+
+    const { content, reasoning } = await agent.chatStream({
       model,
       messages: requestMessages.map((message) => ({
         role: message.role,
         content: message.content
       })),
       onToken: (_token, aggregated) => {
-        setConversations((current) =>
-          current.map((conversation) =>
-            conversation.id === conversationId
-              ? {
-                  ...conversation,
-                  messages: conversation.messages.map((message) =>
-                    message.id === assistantMessageId
-                      ? {
-                          ...message,
-                          content: aggregated
-                        }
-                      : message
-                  )
-                }
-              : conversation
-          )
-        );
+        patchAssistant({ content: aggregated });
+      },
+      onReasoning: (_token, aggregated) => {
+        patchAssistant({ reasoning: aggregated });
       }
     });
 
-    setConversations((current) =>
-      current.map((conversation) =>
-        conversation.id === conversationId
-          ? {
-              ...conversation,
-              messages: conversation.messages.map((message) =>
-                message.id === assistantMessageId
-                  ? {
-                      ...message,
-                      content: answer
-                    }
-                  : message
-              )
-            }
-          : conversation
-      )
-    );
+    patchAssistant({ content, reasoning });
   }
 
   async function handleRegenerate(conversationId) {
@@ -1292,9 +1279,15 @@ export function AgentPanel() {
                         {message.role === "assistant" ? "AI" : "你"}
                       </div>
                       <div className="message-body">
+                        {message.role === "assistant" && message.reasoning ? (
+                          <details className="message-reasoning" open={!message.content}>
+                            <summary>思考过程</summary>
+                            <div className="message-reasoning-body">{message.reasoning}</div>
+                          </details>
+                        ) : null}
                         {message.content ? (
                           <RichTextMessage content={message.content} />
-                        ) : (
+                        ) : message.reasoning ? null : (
                           <div className="message-body-pending">正在生成回答...</div>
                         )}
                         {message.role === "assistant" &&

@@ -797,6 +797,48 @@ button:active:not(:disabled) {
   color: var(--text-faint);
 }
 
+.message-reasoning {
+  margin-bottom: 10px;
+  border: 1px dashed rgba(120, 120, 120, 0.32);
+  border-radius: 14px;
+  background: rgba(245, 245, 240, 0.6);
+  padding: 6px 12px;
+  font-size: 0.85em;
+}
+
+.message-reasoning > summary {
+  cursor: pointer;
+  color: var(--text-faint);
+  user-select: none;
+  list-style: none;
+  padding: 2px 0;
+}
+
+.message-reasoning > summary::-webkit-details-marker {
+  display: none;
+}
+
+.message-reasoning > summary::before {
+  content: "▸ ";
+  display: inline-block;
+  margin-right: 2px;
+  transition: transform 0.15s ease;
+}
+
+.message-reasoning[open] > summary::before {
+  content: "▾ ";
+}
+
+.message-reasoning-body {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(120, 120, 120, 0.16);
+  color: var(--text-faint);
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.55;
+}
+
 .rich-message {
   color: #1f1f1a;
 }
