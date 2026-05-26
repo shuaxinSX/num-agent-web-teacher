@@ -361,12 +361,12 @@
 }
 
 .lagrange-plot-grid {
-  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.9fr);
+  grid-template-columns: 1fr;
   align-items: start;
 }
 
 .lagrange-focus-grid {
-  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.78fr);
+  grid-template-columns: 1fr;
   align-items: start;
 }
 
@@ -600,68 +600,5 @@
   }
 }
 
-/* --- High-Density Two-Column Layout for Lagrange/Hermite --- */
-@media (min-width: 1024px) {
-  .lagrange-stage {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr) !important;
-    align-items: start;
-    /* 将 row-gap 设为 0，避免 grid-row: 2 / 50 产生的大量空行占据高度 */
-    gap: 0 24px !important;
-    grid-auto-flow: row;
-  }
-  
-  /* 统一用 margin-bottom 替代 row-gap */
-  .lagrange-stage > *,
-  .lagrange-focus-grid > *,
-  .lagrange-plot-grid > *,
-  .lagrange-compare-grid > *,
-  .lagrange-rail > * {
-    margin-bottom: 16px;
-  }
 
-  .lagrange-stage-intro {
-    grid-column: 1 / -1;
-  }
-
-  .lagrange-focus-grid,
-  .lagrange-plot-grid,
-  .lagrange-compare-grid,
-  .lagrange-rail {
-    display: contents !important;
-  }
-
-  .lagrange-plot-panel,
-  .lagrange-plot-stack {
-    grid-column: 1 / 2 !important;
-    grid-row: 2 / 50; /* 允许横跨 49 行 */
-    position: sticky;
-    top: 20px;
-    min-width: 0;
-    margin-bottom: 0 !important; /* 吸顶元素不需要底部间距 */
-  }
-
-  .lagrange-toolbar-card,
-  .lagrange-table-card,
-  .lagrange-side-panel,
-  .lagrange-error-row,
-  .lagrange-error-panel,
-  .lagrange-kpi-grid,
-  .lagrange-stats-grid,
-  .lagrange-metric-row,
-  .lagrange-note,
-  .lagrange-card {
-    grid-column: 2 / 3 !important;
-    width: 100%;
-  }
-  
-  /* 强制排序规则，确保逻辑正确的垂直分布 */
-  .lagrange-toolbar-card { order: 1; }
-  .lagrange-side-panel { order: 2; }
-  .lagrange-table-card { order: 3; }
-  .lagrange-card { order: 4; } 
-  .lagrange-error-row, .lagrange-error-panel { order: 5; }
-  .lagrange-kpi-grid, .lagrange-stats-grid, .lagrange-metric-row { order: 6; }
-  .lagrange-note { order: 10; }
-}
 
