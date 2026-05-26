@@ -1379,20 +1379,6 @@ export function AgentPanel() {
                   </button>
                 </div>
 
-                <div className="composer-footer">
-                  <div className="composer-meta">
-                    <span className="model-name">{activeConversation?.model || defaultModel}</span>
-                    <span
-                      className={
-                        speechStatus === "recording"
-                          ? "speech-hint is-recording"
-                          : "speech-hint"
-                      }
-                    >
-                      {getSpeechHint()}
-                    </span>
-                  </div>
-                </div>
               </form>
             </div>
           </>
