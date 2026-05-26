@@ -6176,70 +6176,7 @@ a.rich-link:hover,
   .lesson-page--stacked .lesson-side-card, 
   .lesson-page--stacked .lesson-metric-grid { order: 3; }
 
-  /* 针对数值积分图像实验的两栏布局 */
-  .visualizer-shell > .visualizer-card {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr);
-    align-items: start;
-    gap: 16px 24px;
-    padding: 24px !important;
-  }
-  .visualizer-plot-wrap {
-    grid-column: 1 / 2;
-    grid-row: 1 / 12;
-    position: sticky;
-    top: 20px;
-  }
-  .visualizer-form,
-  .visualizer-input-hint,
-  .visualizer-formula-preview,
-  .visualizer-controls,
-  .visualizer-partition-note,
-  .visualizer-metrics,
-  .visualizer-error,
-  .visualizer-legend,
-  .visualizer-footnote {
-    grid-column: 2 / 3;
-  }
-  
-  /* 优化表单为垂直排列 */
-  .visualizer-form {
-    grid-template-columns: 1fr !important;
-  }
-  .visualizer-controls {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 16px !important;
-  }
-  .visualizer-methods {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-    width: 100% !important;
-  }
-  .visualizer-methods .method-chip {
-    min-width: 0 !important;
-    width: 100% !important;
-    padding: 0 8px !important;
-    font-size: 14px !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-  }
-  .visualizer-actions {
-    display: flex !important;
-    gap: 12px !important;
-    width: 100% !important;
-    justify-content: stretch !important;
-  }
-  .visualizer-actions button {
-    flex: 1 !important;
-    min-width: 0 !important;
-    padding: 0 12px !important;
-    text-align: center !important;
-    font-size: 14px !important;
-  }
+
 }
 
 /* --- Header Space Optimization --- */

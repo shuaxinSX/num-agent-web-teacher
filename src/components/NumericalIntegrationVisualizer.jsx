@@ -440,117 +440,6 @@ export function NumericalIntegrationVisualizer() {
       </div>
 
       <div className="visualizer-card">
-        <div className="visualizer-form">
-          <label className="visualizer-field">
-            <span>被积函数 f(x)</span>
-            <input
-              value={expression}
-              onChange={(event) => {
-                setExpression(event.target.value);
-                resetCustomNodes();
-              }}
-              placeholder="例如：sin(x) + x^2"
-            />
-          </label>
-
-          <label className="visualizer-field">
-            <span>下限 a</span>
-            <input
-              value={aText}
-              onChange={(event) => {
-                setAText(event.target.value);
-                resetCustomNodes();
-              }}
-              placeholder="0"
-            />
-          </label>
-
-          <label className="visualizer-field">
-            <span>上限 b</span>
-            <input
-              value={bText}
-              onChange={(event) => {
-                setBText(event.target.value);
-                resetCustomNodes();
-              }}
-              placeholder="1"
-            />
-          </label>
-        </div>
-
-        <div className="visualizer-input-hint">
-          支持 `sin(x)`、`cos(x)`、`exp(x)`、`log(x)`、`sqrt(x)`、`x^2`、`2x`、`x sin(x)`
-          这类写法。
-        </div>
-
-        <div className="visualizer-formula-preview">
-          <span>公式预览</span>
-          {formulaLatex ? <MathFormula latex={`f(x)=${formulaLatex}`} block={false} /> : <strong>--</strong>}
-        </div>
-
-        <div className="visualizer-controls">
-          <label className="visualizer-slider">
-            <div className="visualizer-control-head">
-              <span>总子区间数 N</span>
-              <strong>{n}</strong>
-            </div>
-            <input type="range" min="1" max="80" step="1" value={n} title={String(n)} onChange={handleSliderChange} />
-          </label>
-
-          <div className="visualizer-methods">
-            {METHOD_OPTIONS.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                className={option.id === method ? "method-chip is-active" : "method-chip"}
-                onClick={() => setMethod(option.id)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="visualizer-actions">
-            <button type="button" className="secondary-button" onClick={resetCustomNodes}>
-              重置分割
-            </button>
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={switchToUniformPartition}
-            >
-              切换等分
-            </button>
-          </div>
-        </div>
-
-        <div className="visualizer-partition-note">
-          {experiment?.useCustom
-            ? `当前是 ${experiment.subdivisionCount} 段自定义分割，点击“切换等分”会改成 ${experiment.subdivisionCount} 个子区间。`
-            : `当前是 ${experiment?.subdivisionCount || n} 个子区间。点击图像可以插入自定义分割点。`}
-        </div>
-
-        {visualizerError ? <div className="visualizer-error">{visualizerError}</div> : null}
-
-        <div className="visualizer-metrics">
-          <div>
-            <span>近似值</span>
-            <strong>{experiment ? formatMetric(experiment.approximation) : "--"}</strong>
-          </div>
-          <div>
-            <span>参考值</span>
-            <strong>{experiment ? formatMetric(experiment.reference) : "--"}</strong>
-          </div>
-          <div>
-            <span>误差</span>
-            <strong>{experiment ? formatMetric(experiment.absoluteError) : "--"}</strong>
-          </div>
-          <div>
-            <span>总子区间数 N</span>
-            <strong>{experiment?.subdivisionCount || "--"}</strong>
-          </div>
-        </div>
-
         <div className="visualizer-plot-wrap">
           <svg
             ref={plotRef}
@@ -696,6 +585,118 @@ export function NumericalIntegrationVisualizer() {
             </span>
           </div>
         </div>
+
+        <div className="visualizer-form">
+          <label className="visualizer-field">
+            <span>被积函数 f(x)</span>
+            <input
+              value={expression}
+              onChange={(event) => {
+                setExpression(event.target.value);
+                resetCustomNodes();
+              }}
+              placeholder="例如：sin(x) + x^2"
+            />
+          </label>
+
+          <label className="visualizer-field">
+            <span>下限 a</span>
+            <input
+              value={aText}
+              onChange={(event) => {
+                setAText(event.target.value);
+                resetCustomNodes();
+              }}
+              placeholder="0"
+            />
+          </label>
+
+          <label className="visualizer-field">
+            <span>上限 b</span>
+            <input
+              value={bText}
+              onChange={(event) => {
+                setBText(event.target.value);
+                resetCustomNodes();
+              }}
+              placeholder="1"
+            />
+          </label>
+        </div>
+
+        <div className="visualizer-input-hint">
+          支持 `sin(x)`、`cos(x)`、`exp(x)`、`log(x)`、`sqrt(x)`、`x^2`、`2x`、`x sin(x)`
+          这类写法。
+        </div>
+
+        <div className="visualizer-formula-preview">
+          <span>公式预览</span>
+          {formulaLatex ? <MathFormula latex={`f(x)=${formulaLatex}`} block={false} /> : <strong>--</strong>}
+        </div>
+
+        <div className="visualizer-controls">
+          <label className="visualizer-slider">
+            <div className="visualizer-control-head">
+              <span>总子区间数 N</span>
+              <strong>{n}</strong>
+            </div>
+            <input type="range" min="1" max="80" step="1" value={n} title={String(n)} onChange={handleSliderChange} />
+          </label>
+
+          <div className="visualizer-methods">
+            {METHOD_OPTIONS.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                className={option.id === method ? "method-chip is-active" : "method-chip"}
+                onClick={() => setMethod(option.id)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="visualizer-actions">
+            <button type="button" className="secondary-button" onClick={resetCustomNodes}>
+              重置分割
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={switchToUniformPartition}
+            >
+              切换等分
+            </button>
+          </div>
+        </div>
+
+        <div className="visualizer-partition-note">
+          {experiment?.useCustom
+            ? `当前是 ${experiment.subdivisionCount} 段自定义分割，点击“切换等分”会改成 ${experiment.subdivisionCount} 个子区间。`
+            : `当前是 ${experiment?.subdivisionCount || n} 个子区间。点击图像可以插入自定义分割点。`}
+        </div>
+
+        {visualizerError ? <div className="visualizer-error">{visualizerError}</div> : null}
+
+        <div className="visualizer-metrics">
+          <div>
+            <span>近似值</span>
+            <strong>{experiment ? formatMetric(experiment.approximation) : "--"}</strong>
+          </div>
+          <div>
+            <span>参考值</span>
+            <strong>{experiment ? formatMetric(experiment.reference) : "--"}</strong>
+          </div>
+          <div>
+            <span>误差</span>
+            <strong>{experiment ? formatMetric(experiment.absoluteError) : "--"}</strong>
+          </div>
+          <div>
+            <span>总子区间数 N</span>
+            <strong>{experiment?.subdivisionCount || "--"}</strong>
+          </div>
+        </div>
+
 
         <div className="visualizer-footnote">
           <p>
