@@ -1222,11 +1222,33 @@ export function AgentPanel() {
             <div className="tool-local-nav">
               <button
                 type="button"
-                className="tool-nav-toggle"
+                className={`tool-nav-toggle ${sidebarCollapsed ? "is-collapsed" : ""}`}
                 onClick={() => setSidebarCollapsed((prev) => !prev)}
+                title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
+                aria-label={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
               >
-                {sidebarCollapsed ? "显示目录" : "收起目录"}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ marginRight: "5px" }}
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M9 3v18" />
+                  {sidebarCollapsed ? (
+                    <path d="M14 15l3-3-3-3" strokeWidth="2.5" />
+                  ) : (
+                    <path d="M16 9l-3 3 3 3" strokeWidth="2.5" />
+                  )}
+                </svg>
+                <span>{sidebarCollapsed ? "展开目录" : "收起目录"}</span>
               </button>
+              <div className="tool-nav-divider" aria-hidden="true" />
               {siblingFeatureItems.length > 1 ? (
                 <nav className="feature-subnav" aria-label={`${activeFeatureGroupTitle} 页面切换`}>
                   {siblingFeatureItems.map((item) => (

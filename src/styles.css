@@ -633,13 +633,7 @@ button:active:not(:disabled) {
   background: rgba(255, 255, 255, 0.88);
   color: #111;
 }
-
-.feature-subnav-button.is-active {
-  border-color: rgba(16, 163, 127, 0.18);
-  background: rgba(255, 255, 255, 0.96);
-  color: #111;
-  box-shadow: 0 10px 24px -18px rgba(17, 17, 17, 0.26);
-}
+/* .feature-subnav-button.is-active has been refactored and merged to the premium style section below */
 
 .tool-topbar p:last-child {
   margin: 8px 0 0;
@@ -5763,59 +5757,122 @@ a.rich-link:hover,
   position: sticky;
   top: 18px;
   z-index: 90;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
 }
 
 .tool-local-nav {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid rgba(31, 31, 26, 0.08);
-  border-radius: 26px;
-  background: rgba(255, 255, 252, 0.78);
+  gap: 6px;
+  padding: 5px 6px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.78);
   box-shadow:
-    0 10px 24px -18px rgba(17, 17, 17, 0.22),
-    0 24px 52px -36px rgba(17, 17, 17, 0.2);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+    0 4px 20px -4px rgba(15, 23, 42, 0.08),
+    0 12px 30px -15px rgba(15, 23, 42, 0.04);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tool-local-nav:hover {
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow:
+    0 6px 24px -4px rgba(15, 23, 42, 0.12),
+    0 16px 36px -12px rgba(15, 23, 42, 0.06);
 }
 
 .tool-local-nav-spacer {
-  flex: 1 1 auto;
-  min-width: 0;
+  display: none;
+}
+
+.tool-nav-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(15, 23, 42, 0.08);
+  margin: 0 4px;
 }
 
 .tool-nav-toggle {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  min-height: 42px;
-  padding: 0 18px;
-  box-shadow: none;
+  gap: 6px;
+  min-height: 32px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background: transparent;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tool-nav-toggle:hover {
+  background: rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+}
+
+.tool-nav-toggle svg {
+  opacity: 0.8;
+  transition: transform 0.2s ease;
+}
+
+.tool-nav-toggle:hover svg {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 .feature-subnav {
-  flex: 1 1 auto;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin: 0;
   padding: 0;
   border: none;
-  border-radius: 0;
   background: transparent;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
   scroll-snap-type: x proximity;
+  overflow-x: auto;
+}
+
+.feature-subnav::-webkit-scrollbar {
+  display: none;
 }
 
 .feature-subnav-button {
-  min-height: 42px;
-  padding: 0 18px;
+  min-height: 32px;
+  height: 32px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
   scroll-snap-align: start;
 }
 
-.feature-subnav-button.is-active {
-  box-shadow: none;
+.feature-subnav-button:hover {
+  background: rgba(15, 23, 42, 0.04);
+  color: #1e293b;
+}
+
+.feature-subnav-button.is-active,
+.feature-subnav-button.is-active:hover {
+  background: linear-gradient(135deg, #10a37f, #0d9488);
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+  border-color: transparent;
 }
 
 .chat-shell.has-floating-sidebar {
@@ -5883,21 +5940,42 @@ a.rich-link:hover,
 
   .tool-local-nav-shell {
     top: 12px;
+    justify-content: stretch;
+    margin: 0 0 16px;
   }
 
   .tool-local-nav {
-    flex-wrap: wrap;
-    padding: 10px;
-    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 16px;
+    width: 100%;
+  }
+
+  .tool-nav-divider {
+    display: none;
   }
 
   .tool-nav-toggle {
     width: 100%;
     justify-content: center;
+    min-height: 36px;
+    height: 36px;
   }
 
   .feature-subnav {
-    flex-basis: 100%;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+  
+  .feature-subnav-button {
+    flex: 1 0 auto;
+    text-align: center;
+    min-height: 36px;
+    height: 36px;
   }
 }
 
