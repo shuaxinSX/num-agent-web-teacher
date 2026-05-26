@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 # Copy the local speech SDK tarball which is listed in dependencies
 COPY byted-ailab-speech-sdk-4.0.10.tgz ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
 
