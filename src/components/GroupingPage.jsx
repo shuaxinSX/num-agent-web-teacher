@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
-import { students, TYPE_LABELS, TYPE_COLORS } from '../data/groupingData';
+import { TYPE_LABELS, TYPE_COLORS } from '../data/groupingData';
 import { computeGroups, buildNetworkEdges, buildStudentGroupMap } from '../utils/groupingAlgorithm';
+import { getStoredStudents } from '../utils/studentDataStore';
+import { DataManagementModal } from './DataManagementModal';
 import { HeatmapChart } from './grouping/HeatmapChart';
 import { BubbleChart } from './grouping/BubbleChart';
 import { SankeyChart } from './grouping/SankeyChart';
@@ -15,6 +17,8 @@ const GROUP_PALETTE = {
 };
 
 export function GroupingPage() {
+  const [currentStudents, setCurrentStudents] = useState(() => getStoredStudents());
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState('heterogeneous');
   const [selectedId, setSelectedId] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
@@ -22,14 +26,14 @@ export function GroupingPage() {
   const [radarStudents, setRadarStudents] = useState([]);
 
   // 计算分组
-  const groups = useMemo(() => computeGroups(mode, 5), [mode]);
+  const groups = useMemo(() => computeGroups(currentStudents, mode, 5), [currentStudents, mode]);
   const edges = useMemo(() => buildNetworkEdges(groups), [groups]);
   const studentGroupMap = useMemo(() => buildStudentGroupMap(groups), [groups]);
 
   function handleSelect(id) {
     setSelectedId(prev => prev === id ? null : id);
     // 更新雷达图（最多2人）
-    const s = students.find(st => st.id === id);
+    const s = currentStudents.find(st => st.id === id);
     if (!s) return;
     setRadarStudents(prev => {
       if (prev.find(p => p.id === id)) return prev.filter(p => p.id !== id);
@@ -44,17 +48,18 @@ export function GroupingPage() {
 
   // 全班统计
   const stats = useMemo(() => {
-    const n = students.length;
-    const avgScores = students[0].scores.map((_, k) =>
-      students.reduce((s, st) => s + st.scores[k], 0) / n
+    const n = currentStudents.length;
+    if (n === 0) return { avgScores: [0, 0, 0, 0], typeCounts: {}, avgAnxiety: 0, highAnxiety: 0 };
+    const avgScores = currentStudents[0].scores.map((_, k) =>
+      currentStudents.reduce((s, st) => s + st.scores[k], 0) / n
     );
     const typeCounts = Object.fromEntries(
-      Object.keys(TYPE_LABELS).map(t => [t, students.filter(s => s.type === t).length])
+      Object.keys(TYPE_LABELS).map(t => [t, currentStudents.filter(s => s.type === t).length])
     );
-    const avgAnxiety = students.reduce((s, st) => s + st.anxiety, 0) / n;
-    const highAnxiety = students.filter(s => s.anxiety >= 4).length;
+    const avgAnxiety = currentStudents.reduce((s, st) => s + st.anxiety, 0) / n;
+    const highAnxiety = currentStudents.filter(s => s.anxiety >= 4).length;
     return { avgScores, typeCounts, avgAnxiety, highAnxiety };
-  }, []);
+  }, [currentStudents]);
 
   return (
     <div className="tool-workspace grouping-page">
@@ -67,11 +72,31 @@ export function GroupingPage() {
               </span>
               <h2>把课前诊断转成可执行的小组结构</h2>
               <p>综合知识点表现、焦虑水平、参与倾向和角色特征，先看全班分布，再决定是异质互补还是同质分层。</p>
-              <div className="tool-dashboard-meta">
+              <div className="tool-dashboard-meta" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                 <span className="tool-dashboard-pill">23级计算机科学与技术1班</span>
                 <span className="tool-dashboard-pill">分段插值专题</span>
-                <span className="tool-dashboard-pill">{students.length} 名学生</span>
+                <span className="tool-dashboard-pill">{currentStudents.length} 名学生</span>
                 <span className="tool-dashboard-pill">{mode === 'heterogeneous' ? '当前模式：异质互补' : '当前模式：同质分层'}</span>
+                <button 
+                  onClick={() => setIsModalOpen(true)}
+                  className="data-mgmt-trigger-btn"
+                  style={{
+                    background: '#10a37f',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '4px 12px',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 4px rgba(16, 163, 127, 0.2)',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseOver={(e) => e.target.style.background = '#0d8a6a'}
+                  onMouseOut={(e) => e.target.style.background = '#10a37f'}
+                >
+                  📁 管理学生数据
+                </button>
               </div>
             </div>
 
@@ -94,17 +119,17 @@ export function GroupingPage() {
           </div>
 
           <div className="grouping-stats-grid">
-        {Object.entries(stats.typeCounts).map(([type, count]) => (
-            <div
-              key={type}
-              className="grouping-stat-card"
-              style={{ borderLeft: `4px solid ${TYPE_COLORS[type]}` }}
-            >
-              <strong style={{ color: TYPE_COLORS[type] }}>{count}</strong>
-              <span>{TYPE_LABELS[type]}</span>
-              <small>画像类型人数</small>
-            </div>
-          ))}
+            {Object.entries(stats.typeCounts).map(([type, count]) => (
+              <div
+                key={type}
+                className="grouping-stat-card"
+                style={{ borderLeft: `4px solid ${TYPE_COLORS[type]}` }}
+              >
+                <strong style={{ color: TYPE_COLORS[type] }}>{count}</strong>
+                <span>{TYPE_LABELS[type]}</span>
+                <small>画像类型人数</small>
+              </div>
+            ))}
             <div
               className="grouping-stat-card"
               style={{ borderLeft: '4px solid #f97316' }}
@@ -117,84 +142,94 @@ export function GroupingPage() {
         </section>
 
         <div className="grouping-visual-grid">
-        <div className="tool-surface-panel grouping-chart-panel">
-          <HeatmapChart
-            students={students}
-            selectedId={selectedId}
-            hoveredId={hoveredId}
-            studentGroupMap={studentGroupMap}
-            groupColors={GROUP_PALETTE}
-            onSelect={handleSelect}
-            onHover={setHoveredId}
-          />
-        </div>
+          <div className="tool-surface-panel grouping-chart-panel">
+            <HeatmapChart
+              students={currentStudents}
+              selectedId={selectedId}
+              hoveredId={hoveredId}
+              studentGroupMap={studentGroupMap}
+              groupColors={GROUP_PALETTE}
+              onSelect={handleSelect}
+              onHover={setHoveredId}
+            />
+          </div>
 
           <div className="grouping-side-stack">
             <div className="tool-surface-panel grouping-chart-panel">
-            <BubbleChart
-              students={students}
-              selectedId={selectedId}
-              hoveredId={hoveredId}
-              onSelect={handleSelect}
-              onHover={setHoveredId}
-            />
-          </div>
+              <BubbleChart
+                students={currentStudents}
+                selectedId={selectedId}
+                hoveredId={hoveredId}
+                onSelect={handleSelect}
+                onHover={setHoveredId}
+              />
+            </div>
 
             <div className="tool-surface-panel grouping-chart-panel">
-            <SankeyChart
-              students={students}
-              selectedId={selectedId}
-              hoveredId={hoveredId}
-              onSelect={handleSelect}
-              onHover={setHoveredId}
-            />
+              <SankeyChart
+                students={currentStudents}
+                selectedId={selectedId}
+                hoveredId={hoveredId}
+                onSelect={handleSelect}
+                onHover={setHoveredId}
+              />
+            </div>
           </div>
-        </div>
 
           <div className="tool-surface-panel grouping-result-panel">
-          <ResultPanel
-            groups={groups}
-            groupColors={GROUP_PALETTE}
-            selectedId={selectedId}
-            onSelectStudent={handleSelectFromResult}
-            mode={mode}
-          />
-        </div>
+            <ResultPanel
+              groups={groups}
+              groupColors={GROUP_PALETTE}
+              selectedId={selectedId}
+              onSelectStudent={handleSelectFromResult}
+              mode={mode}
+            />
+          </div>
         </div>
 
         <div className="tool-surface-panel grouping-network-panel">
-        <NetworkGraph
-          students={students}
-          groups={groups}
-          edges={edges}
-          studentGroupMap={studentGroupMap}
-          groupColors={GROUP_PALETTE}
-          selectedId={selectedId}
-          hoveredId={hoveredId}
-          onSelect={handleSelect}
-          onHover={setHoveredId}
-          mode={mode}
-        />
+          <NetworkGraph
+            students={currentStudents}
+            groups={groups}
+            edges={edges}
+            studentGroupMap={studentGroupMap}
+            groupColors={GROUP_PALETTE}
+            selectedId={selectedId}
+            hoveredId={hoveredId}
+            onSelect={handleSelect}
+            onHover={setHoveredId}
+            mode={mode}
+          />
         </div>
 
-      {selectedId && (
+        {selectedId && (
           <div className="grouping-selected-note">
-          {(() => {
-            const s = students.find(st => st.id === selectedId);
-            return s ? `已选中 ${s.name}（${s.role}）· 点击右下角雷达图查看详情 · 再点一次取消选中` : null;
-          })()}
-        </div>
-      )}
+            {(() => {
+              const s = currentStudents.find(st => st.id === selectedId);
+              return s ? `已选中 ${s.name}（${s.role}）· 点击右下角雷达图查看详情 · 再点一次取消选中` : null;
+            })()}
+          </div>
+        )}
 
-      {radarStudents.length > 0 && (
-        <RadarChart
-          students={radarStudents}
-          groupColors={GROUP_PALETTE}
-          studentGroupMap={studentGroupMap}
-          onClose={() => setRadarStudents([])}
-        />
-      )}
+        {radarStudents.length > 0 && (
+          <RadarChart
+            students={radarStudents}
+            groupColors={GROUP_PALETTE}
+            studentGroupMap={studentGroupMap}
+            onClose={() => setRadarStudents([])}
+          />
+        )}
       </div>
+
+      <DataManagementModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDataChanged={(newList) => {
+          setCurrentStudents(newList);
+          setRadarStudents([]);
+          setSelectedId(null);
+        }}
+      />
     </div>
   );
 }

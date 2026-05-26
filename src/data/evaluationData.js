@@ -182,8 +182,8 @@ function genFeedback(dims, student) {
 }
 
 // ── 主构建函数 ────────────────────────────────────────────────────────────
-export function buildEvalStudents() {
-  return students.map((student, idx) => {
+export function buildEvalStudents(studentList = students) {
+  return studentList.map((student, idx) => {
     const cfg     = TYPE_CFG[student.type];
     const dims    = computeDims(student, idx);
     const weekly  = genWeekly(dims, student, idx);

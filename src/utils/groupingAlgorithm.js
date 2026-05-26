@@ -133,10 +133,10 @@ export function computeGroupStats(group) {
 
 // ── 主接口 ────────────────────────────────────────────────────────────
 
-export function computeGroups(mode = 'heterogeneous', numGroups = 5) {
+export function computeGroups(studentList = students, mode = 'heterogeneous', numGroups = 5) {
   const groups = mode === 'heterogeneous'
-    ? heterogeneousGrouping(students, numGroups)
-    : homogeneousGrouping(students, numGroups);
+    ? heterogeneousGrouping(studentList, numGroups)
+    : homogeneousGrouping(studentList, numGroups);
 
   return groups.map((members, i) => ({
     id: `G${i + 1}`,

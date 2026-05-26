@@ -4,6 +4,8 @@ import {
   EVAL_DIM_KEYS, EVAL_DIM_LABELS, EVAL_DIM_COLORS, EVAL_DIM_ICONS,
   STAGE_LABELS, STAGE_COLORS, WEEK_LABELS, WEEKS,
 } from '../data/evaluationData';
+import { getStoredStudents } from '../utils/studentDataStore';
+import { DataManagementModal } from './DataManagementModal';
 import './toolPages.css';
 
 // ── 颜色工具 ─────────────────────────────────────────────────────────────
@@ -152,11 +154,13 @@ function ScoreBadge({ score }) {
 // 主页面
 // ══════════════════════════════════════════════════════════════════════════
 export function EvaluationPage() {
+  const [currentStudents, setCurrentStudents] = useState(() => getStoredStudents());
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [view, setView] = useState('teacher');
   const [selectedId, setSelectedId] = useState(null);
 
-  const evalStudents = useMemo(() => buildEvalStudents(), []);
+  const evalStudents = useMemo(() => buildEvalStudents(currentStudents), [currentStudents]);
   const classStats   = useMemo(() => computeClassStats(evalStudents), [evalStudents]);
   const selected     = selectedId ? evalStudents.find(s => s.id === selectedId) : null;
   const sortedByScore = useMemo(() =>
@@ -172,7 +176,28 @@ export function EvaluationPage() {
         >
           数字画像、评分、反馈与成长轨迹联动
         </span>
-        <h2>{evalStudents.length} 名学生的全链路评价看板</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
+          <h2 style={{ margin: 0 }}>{evalStudents.length} 名学生的全链路评价看板</h2>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            style={{
+              background: '#10a37f',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '4px 12px',
+              fontSize: '0.8rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(16, 163, 127, 0.2)',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseOver={(e) => e.target.style.background = '#0d8a6a'}
+            onMouseOut={(e) => e.target.style.background = '#10a37f'}
+          >
+            📁 管理学生数据
+          </button>
+        </div>
         <p>把课前数据、弹性分组、AI 对话和课后反馈放在同一视图里，先看全班，再下钻到单个学生。</p>
       </div>
       <div className="evaluation-toolbar-controls">
@@ -835,6 +860,15 @@ export function EvaluationPage() {
       <PipelineNav />
       {renderStep()}
       </div>
+
+      <DataManagementModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDataChanged={(newList) => {
+          setCurrentStudents(newList);
+          setSelectedId(null);
+        }}
+      />
     </div>
   );
 }
