@@ -200,44 +200,27 @@ export function EvaluationPage() {
           数字画像、评分、反馈与成长轨迹联动
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
-          <h2 style={{ margin: 0 }}>{evalStudents.length} 名学生的全链路评价看板</h2>
+          <h2 style={{ margin: 0 }}>学生的全链路评价看板</h2>
           <button 
             onClick={() => setIsModalOpen(true)}
-            style={{
-              background: '#10a37f',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              padding: '4px 12px',
-              fontSize: '0.8rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              boxShadow: '0 2px 4px rgba(16, 163, 127, 0.2)',
-              transition: 'all 0.15s ease',
-            }}
-            onMouseOver={(e) => e.target.style.background = '#0d8a6a'}
-            onMouseOut={(e) => e.target.style.background = '#10a37f'}
+            className="premium-action-btn btn-manage-data"
           >
-            📁 管理学生数据
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+            管理学生数据
           </button>
           <button 
             onClick={() => pageFileInputRef.current.click()}
-            style={{
-              background: '#4f46e5',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              padding: '4px 12px',
-              fontSize: '0.8rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              boxShadow: '0 2px 4px rgba(79, 70, 229, 0.2)',
-              transition: 'all 0.15s ease',
-            }}
-            onMouseOver={(e) => e.target.style.background = '#4338ca'}
-            onMouseOut={(e) => e.target.style.background = '#4f46e5'}
+            className="premium-action-btn btn-import-csv"
           >
-            📤 导入名单 (CSV)
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" x2="12" y1="3" y2="15" />
+            </svg>
+            导入名单 (CSV)
           </button>
           <input 
             type="file" 

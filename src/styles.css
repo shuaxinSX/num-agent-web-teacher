@@ -6260,3 +6260,61 @@ a.rich-link:hover,
   padding: 12px 16px !important;
   border-radius: 16px !important;
 }
+
+/* ===== Premium Action Buttons ===== */
+.premium-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  outline: none;
+}
+
+/* 管理数据按钮：绿色微渐变+高光 */
+.btn-manage-data {
+  background: linear-gradient(135deg, rgba(16, 163, 127, 0.08), rgba(13, 148, 136, 0.08));
+  color: #0f8d6d;
+  border-color: rgba(16, 163, 127, 0.2);
+  box-shadow: 0 2px 6px rgba(16, 163, 127, 0.03);
+}
+
+.btn-manage-data:hover {
+  background: linear-gradient(135deg, #10a37f, #0d9488);
+  color: white !important;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-manage-data:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* 导入名单按钮：深蓝色微渐变 */
+.btn-import-csv {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(99, 102, 241, 0.08));
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.2);
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.03);
+}
+
+.btn-import-csv:hover {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white !important;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-import-csv:active {
+  transform: translateY(0) scale(0.97);
+}
+
