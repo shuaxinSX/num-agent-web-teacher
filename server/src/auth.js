@@ -8,20 +8,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "num-agent-default-secret-key-12345
 
 // JWT Authentication Middleware
 export function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ message: "未登录，请先登录。" });
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: "登录凭证无效或已过期，请重新登录。" });
-    }
-    req.user = user;
-    next();
-  });
+  req.user = { id: 1, username: "guest" };
+  next();
 }
 
 // User Registration Endpoint
