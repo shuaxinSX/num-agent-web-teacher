@@ -279,6 +279,7 @@ export function GroupingPage() {
           setRadarStudents([]);
           setSelectedId(null);
         }}
+        mode="grouping"
       />
     </div>
   );

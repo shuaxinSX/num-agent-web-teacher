@@ -1,4 +1,5 @@
 import { students as defaultStudents } from '../data/groupingData';
+import { buildMockStudentDataset } from '../data/lagrangeTeacherMockData';
 
 const STORAGE_KEY = 'num-agent-custom-students';
 
@@ -93,4 +94,42 @@ export function parseCSVText(text) {
   }
   return importedList;
 }
+
+// ===== Teacher Feedback & Lagrange Diagnostic Dataset Storage =====
+const LAGRANGE_STORAGE_KEY = 'num-agent-lagrange-students-v2';
+
+export function getStoredLagrangeDashboardStudents() {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+  try {
+    const stored = window.localStorage.getItem(LAGRANGE_STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (error) {
+    console.error('Failed to load lagrange students from localStorage:', error);
+  }
+  return buildMockStudentDataset();
+}
+
+export function saveLagrangeDashboardStudents(studentsList) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(LAGRANGE_STORAGE_KEY, JSON.stringify(studentsList));
+  } catch (error) {
+    console.error('Failed to save lagrange students to localStorage:', error);
+  }
+}
+
+export function resetLagrangeDashboardStudents() {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.removeItem(LAGRANGE_STORAGE_KEY);
+  } catch (error) {
+    console.error('Failed to reset lagrange students:', error);
+  }
+  return buildMockStudentDataset();
+}
+
 

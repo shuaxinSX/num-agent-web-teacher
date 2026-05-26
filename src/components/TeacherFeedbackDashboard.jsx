@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import "./TeacherFeedbackDashboard.css";
 import { InlineMathText } from "./InlineMathText";
 import { MathFormula } from "./MathFormula";
+import { DataManagementModal } from "./DataManagementModal";
+import { getStoredLagrangeDashboardStudents, saveLagrangeDashboardStudents } from "../utils/studentDataStore";
 import {
   buildMockStudentDataset,
   diagnosisMeta,
@@ -887,7 +889,9 @@ function buildPointPosition(value, min, max, size) {
 }
 
 export function TeacherFeedbackDashboard() {
-  const students = useMemo(() => buildMockStudentDataset(), []);
+  const [currentStudents, setCurrentStudents] = useState(() => getStoredLagrangeDashboardStudents());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const students = currentStudents;
   const dashboard = useMemo(() => buildDashboardView(students), [students]);
   const [activeDiagnosis, setActiveDiagnosis] = useState(dashboard.dominantDiagnosis.label);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
@@ -980,6 +984,26 @@ export function TeacherFeedbackDashboard() {
             <div className="teacher-hero-meta-line">
               <span className="teacher-hero-pill">{CLASS_NAME}</span>
               <span className="teacher-hero-pill">{dashboard.students.length} 人</span>
+              <button 
+                type="button" 
+                className="teacher-hero-pill"
+                onClick={() => setIsModalOpen(true)}
+                style={{ 
+                  background: '#10a37f', 
+                  color: 'white', 
+                  cursor: 'pointer',
+                  border: 'none',
+                  fontWeight: 600,
+                  boxShadow: '0 2px 8px rgba(16, 163, 127, 0.3)',
+                  height: '24px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '0 10px',
+                  borderRadius: '12px'
+                }}
+              >
+                🛠️ 管理本页学情数据
+              </button>
             </div>
           </div>
 
@@ -1608,6 +1632,16 @@ export function TeacherFeedbackDashboard() {
           </aside>
         </div>
       ) : null}
+      {/* Data Management Modal */}
+      <DataManagementModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDataChanged={(newList) => {
+          setCurrentStudents(newList);
+          setSelectedStudentId(null);
+        }}
+        mode="teacher-dashboard"
+      />
     </div>
   );
 }

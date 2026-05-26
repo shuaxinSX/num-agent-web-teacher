@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { InlineMathText } from "./InlineMathText";
+import { DataManagementModal } from "./DataManagementModal";
 import "./toolPages.css";
 
 const TONES = {
@@ -1157,6 +1158,7 @@ function ToolNote({ tone, children }) {
 }
 
 export function LagrangeFeedbackPage({ onOpenLagrange }) {
+  const [isDataModalOpen, setIsDataModalOpen] = useState(false);
   const [form, setForm] = useState(() => createEmptyForm());
   const [editCount, setEditCount] = useState(0);
   const [submitError, setSubmitError] = useState("");
@@ -1364,6 +1366,21 @@ export function LagrangeFeedbackPage({ onOpenLagrange }) {
             </div>
 
             <div className="tool-page-actions">
+              <button
+                type="button"
+                onClick={() => setIsDataModalOpen(true)}
+                style={{
+                  padding: "12px 16px",
+                  borderRadius: 16,
+                  border: `1px solid rgba(16, 163, 127, 0.24)`,
+                  background: "rgba(16, 163, 127, 0.1)",
+                  color: "#0f8d6d",
+                  fontWeight: 700,
+                  cursor: "pointer"
+                }}
+              >
+                🛠️ 管理学生数据
+              </button>
               <button
                 type="button"
                 onClick={loadDemoForm}
@@ -2069,6 +2086,14 @@ export function LagrangeFeedbackPage({ onOpenLagrange }) {
           </div>
         </div>
       </div>
+      <DataManagementModal
+        isOpen={isDataModalOpen}
+        onClose={() => setIsDataModalOpen(false)}
+        onDataChanged={(newList) => {
+          // Data updated
+        }}
+        mode="lagrange-feedback"
+      />
     </div>
   );
 }

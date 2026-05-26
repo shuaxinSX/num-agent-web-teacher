@@ -917,6 +917,7 @@ export function EvaluationPage() {
           setCurrentStudents(newList);
           setSelectedId(null);
         }}
+        mode="evaluation"
       />
     </div>
   );
