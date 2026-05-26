@@ -6154,7 +6154,7 @@ a.rich-link:hover,
   }
   .lesson-page--stacked .lesson-main-column {
     grid-column: 1 / 2;
-    grid-row: 1 / 100;
+    grid-row: 1 / span 8;
     position: sticky;
     top: 20px;
     min-width: 0;
